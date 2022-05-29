@@ -22,8 +22,7 @@ public class GooglePlacesAPIRepository implements RestaurantRepository {
 		try {
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			if (response.statusCode()==200) {
-				System.out.println(response.body());
-                Object result = JSONValue.parse(response.toString());
+                Object result = JSONValue.parse(response.body().toString());
                 this.restaurants = (JSONArray)result;
 			}
 		} catch (IOException | InterruptedException e) {
