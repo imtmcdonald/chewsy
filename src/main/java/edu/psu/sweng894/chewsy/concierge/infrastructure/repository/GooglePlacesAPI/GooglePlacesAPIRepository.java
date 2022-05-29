@@ -13,8 +13,9 @@ import org.json.simple.JSONValue;
 
 public class GooglePlacesAPIRepository implements RestaurantRepository {
     private JSONArray restaurants;
+	private String apiKey = System.getenv("GOOGLE_PLACES_API_KEY");
 
-	public JSONArray findRestaurants(String location, int radius, String apiKey) {
+	public JSONArray findRestaurants(String location, int radius) {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = 
 			HttpRequest.newBuilder().uri(URI.create("https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+" + location + "&radius=" + radius + "&fields=formatted_address%2Cname%2Crating&key=" + apiKey)).build();
