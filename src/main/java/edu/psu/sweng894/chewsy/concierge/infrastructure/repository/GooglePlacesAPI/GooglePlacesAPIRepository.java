@@ -8,24 +8,25 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class GooglePlacesAPIRepository implements RestaurantRepository {
-    private JSONArray restaurants;
+    private JSONObject restaurants;
 	private String apiKey = System.getenv("GOOGLE_PLACES_API_KEY");
 
-	public JSONArray findRestaurants(String location, int radius) {
+	public JSONObject findRestaurants(String location, int radius) {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = 
 			HttpRequest.newBuilder().uri(URI.create("https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+" + location + "&radius=" + radius + "&fields=formatted_address%2Cname%2Crating&key=" + apiKey)).build();
 		try {
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			if (response.statusCode()==200) {
-                Object result = JSONValue.parse(response.body().toString());
-                this.restaurants = (JSONArray)result;
+				JSONParser parser = new JSONParser();
+                this.restaurants = (JSONObject) parser.parse(response.body().toString());
 			}
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException | InterruptedException | ParseException e) {
 			e.printStackTrace();
 		}
 
