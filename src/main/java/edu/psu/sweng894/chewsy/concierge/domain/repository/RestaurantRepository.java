@@ -1,7 +1,7 @@
 package edu.psu.sweng894.chewsy.concierge.domain.repository;
 
-import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 public interface RestaurantRepository {
-    public JSONObject findRestaurants(String location, int radius);
+    public JSONArray findRestaurants(String location, int radius);
 }
