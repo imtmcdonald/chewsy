@@ -1,5 +1,6 @@
 package edu.psu.sweng894.chewsy.concierge.infrastructure.repository.GooglePlacesAPI;
 
+import edu.psu.sweng894.chewsy.concierge.domain.Request;
 import edu.psu.sweng894.chewsy.concierge.domain.repository.RestaurantRepository;
 
 import java.io.IOException;
