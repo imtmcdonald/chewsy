@@ -4,7 +4,7 @@ import edu.psu.sweng894.chewsy.concierge.domain.repository.RestaurantRepository;
 
 import org.junit.Test;
 
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
 
 import static org.junit.Assert.*; 
 

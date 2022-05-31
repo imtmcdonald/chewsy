@@ -1,9 +1,9 @@
 package edu.psu.sweng894.chewsy.concierge.domain.service;
 
-import org.json.simple.JSONArray;
+import org.json.JSONArray;
+import org.springframework.stereotype.Service;
 
-import edu.psu.sweng894.chewsy.concierge.domain.Request;
-
+@Service
 public interface ConciergeService {
-    public JSONArray findRestaurants(Request restaurantRequest);
+    public JSONArray findRestaurants(String location, int radius);
 }
