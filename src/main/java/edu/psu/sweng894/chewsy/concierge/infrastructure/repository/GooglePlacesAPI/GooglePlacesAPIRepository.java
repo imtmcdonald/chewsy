@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -27,33 +28,62 @@ public class GooglePlacesAPIRepository implements RestaurantRepository {
 		try {
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			if (response.statusCode()==200) {
-                JSONObject restaurants = new JSONObject(response.body().toString());
-				JSONArray results = restaurants.getJSONArray("results");
-				for (int i = 0; i < results.length(); i++) {  
-              
-					// store each object in JSONObject  
-					JSONObject restaurant = results.getJSONObject(i);
-					JSONObject restaurantParsed = new JSONObject();
-					  
-					// get field value from JSONObject using get() method 
-					restaurantParsed.put("NAME", restaurant.get("name"));
-					restaurantParsed.put("ADDRESS", restaurant.get("formatted_address"));
 
-					if (restaurant.get("rating")==null) {
-						restaurantParsed.put("RATING", "Unknown");
-					} else {
-						restaurantParsed.put("RATING", restaurant.get("rating"));
-					}
+				JSONArray results = new JSONObject(response.body().toString()).getJSONArray("results");
+				buildList(results, restaurantList);
 
-					restaurantList.put(restaurantParsed);
-				}
+				// String pageToken = new JSONObject(response.body().toString()).getString("next_page_token");
+				// if (new JSONObject(response.body().has("next_page_token"))) {
+				// 	JSONArray results = new JSONObject(response.body().toString()).getJSONArray("results");
+				// 	buildList(results, restaurantList);	
+				// }
+				// JSONObject pageToken = new JSONObject(response.body()).
+
+				// while (new JSONObject(response.body().has("next_page_token"))) {
+				// 	HttpRequest requestNextPage = 
+				// 		HttpRequest.newBuilder().uri(URI.create("https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+" + location + "&radius=" + radius + "&pagetoken=" + pageToken + "&fields=formatted_address,name,rating&key=" + apiKey)).build();
+					
+				// 	HttpResponse<String> responseNextPage = client.send(requestNextPage, BodyHandlers.ofString());
+				// 	if (responseNextPage.statusCode()==200) {
+				// 		try {
+				// 			pageToken = new JSONObject(response.body().toString()).getString("next_page_token");
+				// 		} catch (JSONException e) {
+				// 			pageToken = null;
+				// 		}
+				// 		JSONArray results = new JSONObject(response.body().toString()).getJSONArray("results");
+				// 		buildList(results, restaurantList);	
+				// 	}
+				// }			
 			}
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		} catch (NoSuchElementException e) {
 			System.out.println("Unknown");
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 
         return restaurantList;
+	}
+
+	private void buildList(JSONArray results, JSONArray restaurantList) {
+		for (int i = 0; i < results.length(); i++) {  
+	  
+			// store each object in JSONObject  
+			JSONObject restaurant = results.getJSONObject(i);
+			JSONObject restaurantParsed = new JSONObject();
+			  
+			// get field value from JSONObject using get() method 
+			restaurantParsed.put("NAME", restaurant.get("name"));
+			restaurantParsed.put("ADDRESS", restaurant.get("formatted_address"));
+
+			if (restaurant.get("rating")==null) {
+				restaurantParsed.put("RATING", "Unknown");
+			} else {
+				restaurantParsed.put("RATING", restaurant.get("rating"));
+			}
+
+			restaurantList.put(restaurantParsed);
+		}
 	}
 }
