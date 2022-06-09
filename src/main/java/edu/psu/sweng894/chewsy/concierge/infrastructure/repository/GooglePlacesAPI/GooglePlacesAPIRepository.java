@@ -24,36 +24,42 @@ public class GooglePlacesAPIRepository implements RestaurantRepository {
 
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = 
-			HttpRequest.newBuilder().uri(URI.create("https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+" + location + "&radius=" + radius + "&fields=formatted_address,name,rating&key=" + apiKey)).build();
+			HttpRequest.newBuilder().uri(URI.create("https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+" + location + "&radius=" + radius + "&key=" + apiKey)).build();
 		try {
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 			if (response.statusCode()==200) {
 
+				JSONObject jsonResponse = new JSONObject(response.body());
 				JSONArray results = new JSONObject(response.body().toString()).getJSONArray("results");
 				buildList(results, restaurantList);
 
-				// String pageToken = new JSONObject(response.body().toString()).getString("next_page_token");
-				// if (new JSONObject(response.body().has("next_page_token"))) {
-				// 	JSONArray results = new JSONObject(response.body().toString()).getJSONArray("results");
-				// 	buildList(results, restaurantList);	
-				// }
-				// JSONObject pageToken = new JSONObject(response.body()).
+				int i = 0;
 
-				// while (new JSONObject(response.body().has("next_page_token"))) {
-				// 	HttpRequest requestNextPage = 
-				// 		HttpRequest.newBuilder().uri(URI.create("https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+" + location + "&radius=" + radius + "&pagetoken=" + pageToken + "&fields=formatted_address,name,rating&key=" + apiKey)).build();
+				System.out.println(new JSONObject(response.body().toString()).getString("next_page_token"));
+
+				while(jsonResponse.has("next_page_token")) {
+					Thread.sleep(2000);
+					String pageToken = new JSONObject(response.body().toString()).getString("next_page_token");
+
+					request = 
+						HttpRequest.newBuilder().uri(URI.create("https://maps.googleapis.com/maps/api/place/textsearch/json?pagetoken=" + pageToken + "&key=" + apiKey)).build();
 					
-				// 	HttpResponse<String> responseNextPage = client.send(requestNextPage, BodyHandlers.ofString());
-				// 	if (responseNextPage.statusCode()==200) {
-				// 		try {
-				// 			pageToken = new JSONObject(response.body().toString()).getString("next_page_token");
-				// 		} catch (JSONException e) {
-				// 			pageToken = null;
-				// 		}
-				// 		JSONArray results = new JSONObject(response.body().toString()).getJSONArray("results");
-				// 		buildList(results, restaurantList);	
-				// 	}
-				// }			
+					response = client.send(request, BodyHandlers.ofString());
+
+					i = i + 1;
+
+					if (response.statusCode()==200) {
+						JSONArray nextPageResults = new JSONObject(response.body().toString()).getJSONArray("results");
+						buildList(nextPageResults, restaurantList);
+
+						jsonResponse = new JSONObject(response.body());
+
+					}
+
+					if(i >= 4) {
+						break;
+					}
+				}		
 			}
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
