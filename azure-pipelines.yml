@@ -1,0 +1,33 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- development
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: Gradle@3
+  inputs:
+    gradleWrapperFile: 'gradlew'
+    tasks: 'build test'
+    publishJUnitResults: true
+    testResultsFiles: '**/TEST-*.xml'
+    testRunTitle: 'Concierge Microservice Tests'
+    jdkVersionOption: '1.17'
+    javaHomeOption: 'JDKVersion'
+    sonarQubeRunAnalysis: false
+    sqGradlePluginVersionChoice: 'build'
+    spotBugsAnalysis: false
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'JaCoCo'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/jacocoTestReport.xml'
+    pathToSources: '$(System.DefaultWorkingDirectory)/**/src/main/java/'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/html'
+    additionalCodeCoverageFiles: '$(System.DefaultWorkingDirectory)/**/build/jacoco/*.exec'
+    failIfCoverageEmpty: true
