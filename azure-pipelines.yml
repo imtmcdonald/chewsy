@@ -13,7 +13,7 @@ steps:
 - task: Gradle@3
   inputs:
     gradleWrapperFile: 'gradlew'
-    tasks: 'build test'
+    tasks: 'build test azurewebapp'
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     testRunTitle: 'Concierge Microservice Tests'
@@ -31,3 +31,8 @@ steps:
     reportDirectory: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/html'
     additionalCodeCoverageFiles: '$(System.DefaultWorkingDirectory)/**/build/jacoco/*.exec'
     failIfCoverageEmpty: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Build Artifacts'
+  inputs: 
+    pathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
