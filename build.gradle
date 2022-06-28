@@ -49,19 +49,19 @@ tasks.named('test') {
 	finalizedBy jacocoTestReport
 }
 
-azurewebapp {
-    subscription = '2e9109e5-acb9-4231-b99f-419d2405dbf8'
-    resourceGroup = 'chewsy'
-    appName = 'chewsy-concierge'
-	appServicePlanName = 'ASP-chewsy-a791'
-    pricingTier = 'B1' 
-    region = 'eastus' 
-    runtime {
-        os = 'Linux' 
-        webContainer = 'Java SE'
-        javaVersion = 'Java 17'
-    }
-}
+// azurewebapp {
+//     subscription = '2e9109e5-acb9-4231-b99f-419d2405dbf8'
+//     resourceGroup = 'chewsy'
+//     appName = 'chewsy-concierge'
+// 	appServicePlanName = 'ASP-chewsy-a791'
+//     pricingTier = 'B1' 
+//     region = 'eastus' 
+//     runtime {
+//         os = 'Linux' 
+//         webContainer = 'Java SE'
+//         javaVersion = 'Java 17'
+//     }
+// }
 
 jacocoTestReport {
     dependsOn test // tests are required to run before generating the report
