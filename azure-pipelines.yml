@@ -36,11 +36,6 @@ steps:
     additionalCodeCoverageFiles: '$(System.DefaultWorkingDirectory)/**/build/jacoco/*.exec'
     failIfCoverageEmpty: true
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Build Artifacts'
-  inputs: 
-    pathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-
 - task: CopyFiles@2
   displayName: 'Copy files'
   inputs:
