@@ -19,6 +19,7 @@ public class ConciergeController {
         this.conciergeService = conciergeService;
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String findRestaurants(@RequestBody final FindRestaurantsRequest findRestaurantsRequest) {
         final JSONArray restaurantList = conciergeService.findRestaurants(findRestaurantsRequest.getLocation(), findRestaurantsRequest.getRadius());
